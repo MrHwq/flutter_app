@@ -1,12 +1,9 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 
-import 'dart:convert';
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Post.dart';
 import 'package:flutter_app/product.dart';
-import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -207,7 +204,7 @@ class RandomWordState extends State<MyStateWidget> {
             new Center(child: new FutureBuilder<Post>(future: fetchPost(),
                 builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                        return Text(snapshot.data.title);
+                        return Text(snapshot.data.toString());
                     } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                     }
@@ -223,9 +220,13 @@ class RandomWordState extends State<MyStateWidget> {
     }
 
     Future<Post> fetchPost() async {
-        final response = await http.get('https://jsonplaceholder.typicode.com/posts/1');
-        final post = json.decode(response.body);
-        return Post.fromJson(post);
+//        final response = await http.get('https://jsonplaceholder.typicode.com/posts/1');
+//        final post = json.decode(response.body);
+//        return Post.fromJson(post);
+        return Future.delayed(Duration(seconds: 10), () {
+//            return Post(userId: 1, id: 2, title: "123", body: "123123");
+            throw CastError();
+        });
     }
 
     _navigateShop(BuildContext context) async {

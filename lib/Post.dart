@@ -12,4 +12,10 @@ class Post {
             title: json['title'],
             body: json['body']);
     }
+
+    @override
+    String toString() {
+        return "userId: ${userId}\nid:${id}\ntitle:${title}\nbody:${body}";
+    }
+
 }
