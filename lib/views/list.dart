@@ -87,8 +87,7 @@ class CountAdd extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        return RaisedButton(onPressed: this.onPressed,
-            child: Text('增加'));
+        return RaisedButton(onPressed: this.onPressed, child: Text('增加'));
     }
 }
 
@@ -135,7 +134,6 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
     }
 
     Widget makeCard(idx, text) {
-        print("asdasdasd $idx, $text");
         if (idx == 0) {
             return CountButton();
         }
@@ -145,8 +143,7 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
 //        if (idx.isOdd) {
 //            return Divider();
 //        }
-        print('text:::::${text.runtimeType},,,,$text');
-        return _buildRow(context, text);
+        return _buildRow(context, idx, text);
     }
 
     Future<Map> getIndexListData([Map<String, dynamic> params]) async {
@@ -164,18 +161,35 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
         return result;
     }
 
+    int page = 0;
+
 //    getIndexListData,
     Widget _buildSuggestions() {
-        return ListRefresh.ListRefresh(makeCard, headerView, () {
-            return Future.delayed(Duration(seconds: 2), () {
+        return ListRefresh.ListRefresh(makeCard, headerView, () async {
+            print('onrefresh');
+            return Future<List<WordPair>>.delayed(Duration(seconds: 2), () {
+                setState(() {
+                    _saved.clear();
+                });
+                print('onrefresh 0 end');
+                page = 0;
                 Iterable<WordPair> iter = generateWordPairs();
                 return iter.take(10).toList();
             });
-        }, () {
-            return Future.delayed(Duration(seconds: 4), () {
-                Iterable<WordPair> iter = generateWordPairs();
-                return iter.take(15).toList();
-            });
+        }, () async {
+            print('onloadmore page: $page end');
+            page++;
+            if (page < 4) {
+                return Future<List<WordPair>>.delayed(Duration(seconds: 4), () {
+                    page++;
+                    Iterable<WordPair> iter = generateWordPairs();
+                    return iter.take(15).toList();
+                });
+            } else {
+                return Future<Null>(() {
+                    return null;
+                });
+            }
         });
 //        return ListView.builder(itemBuilder: (context, idx) {
 //            if (idx == 0) {
@@ -199,9 +213,11 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
 
     /// context: asd
     /// pair: 单词
-    Widget _buildRow(BuildContext context, WordPair pair) {
+    Widget _buildRow(BuildContext context, int idx, WordPair pair) {
         final alreadySaved = _saved.contains(pair);
-        return ListTile(title: Text(pair.asPascalCase, style: _biggerFont),
+        return ListTile(
+            leading: Icon(Icons.add),
+            title: Text(pair.asPascalCase, style: _biggerFont),
             trailing: IconButton(icon: Icon(
                 alreadySaved ? Icons.favorite : Icons.favorite_border,
                 color: alreadySaved ? Colors.red : null),
@@ -253,7 +269,6 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
         this.title = WordPair
             .random()
             .asPascalCase;
-        print('title is ${title}..............');
         if (posts == null) {
             posts = fetchPost();
         }
@@ -298,11 +313,8 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
                         },
                     ),
                 ],
-            )
-            ,
-            body:
-//            _buildSuggestions(),
-            Container(child: FutureBuilder<Post>(future: posts,
+            ),
+            body: Container(child: FutureBuilder<Post>(future: posts,
                 builder: (context, snapshot) {
                     if (snapshot.hasData) {
 //                        NestedScrollView(headerSliverBuilder: (context, innerBoxIsScrolled) {

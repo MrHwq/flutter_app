@@ -98,7 +98,6 @@ class _BannerState<T extends BaseItem> extends State<HomeBanner> {
     Widget _buildItemTitle(String title) {
         return Container(
             decoration: BoxDecoration(
-
                 /// 背景的渐变色
                 gradient: LinearGradient(
                     begin: Alignment.bottomCenter,

@@ -69,8 +69,7 @@ class _PageState extends State<MyApp> with SingleTickerProviderStateMixin {
             length: tabData.length); // 这里的length 决定有多少个底导 submenus
         myTabs.forEach((w) => print(w));
         for (int i = 0; i < tabData.length; i++) {
-            myTabs.add(
-                new Tab(text: tabData[i]['text'], icon: tabData[i]['icon']));
+            myTabs.add(new Tab(text: tabData[i]['text'], icon: tabData[i]['icon']));
         }
         controller.addListener(() {
             if (controller.indexIsChanging) {

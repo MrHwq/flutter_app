@@ -6,7 +6,7 @@ class ListRefresh extends StatefulWidget {
     final refresh;
     final more;
 
-    const ListRefresh([this.renderItem, this.headerView, this.refresh, this.more]) : super();
+    const ListRefresh([this.renderItem, this.headerView, this.refresh, this.more]) :super();
 
     @override
     State<StatefulWidget> createState() => _ListRefreshState(refresh, more);
@@ -15,10 +15,12 @@ class ListRefresh extends StatefulWidget {
 class _ListRefreshState extends State<ListRefresh> {
     bool isLoading = false; // 是否正在请求数据中
     bool _hasMore = true; // 是否还有更多数据可加载
-    List items = new List();
+    List items = List();
     final refresh;
     final more;
-    ScrollController _scrollController = new ScrollController();
+    ScrollController _scrollController = ScrollController();
+    final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+    GlobalKey<RefreshIndicatorState>();
 
     _ListRefreshState(this.refresh, this.more);
 
@@ -30,25 +32,28 @@ class _ListRefreshState extends State<ListRefresh> {
         }
         if (this.mounted) {
             setState(() {
-                items.clear();
                 isLoading = true;
                 _hasMore = true;
             });
         }
-        print(refresh);
         if (isLoading) {
             refresh().then((data) {
+                items.clear();
                 print(data);
                 setState(() {
                     items.addAll(data);
+                    _hasMore = data is List && data.isNotEmpty;
                     isLoading = false;
                 });
                 backElasticEffect();
             }).catchError((err) {
                 print(err);
-                setState(() {
-                    isLoading = false;
-                });
+                if (mounted) {
+                    setState(() {
+                        _hasMore = false;
+                        isLoading = false;
+                    });
+                }
                 backElasticEffect();
             });
         }
@@ -62,30 +67,33 @@ class _ListRefreshState extends State<ListRefresh> {
                 more().then((data) {
                     setState(() {
                         items.addAll(data);
+                        _hasMore = data is List && data.isNotEmpty;
                         isLoading = false;
                     });
                     backElasticEffect();
                 }).catchError((err) {
                     setState(() {
+                        _hasMore = false;
                         isLoading = false;
                     });
                     backElasticEffect();
                 });
-                ;
             }
         });
     }
 
 //  回弹效果
     backElasticEffect() {
-//    double edge = 50.0;
-//    double offsetFromBottom = _scrollController.position.maxScrollExtent - _scrollController.position.pixels;
-//    if (offsetFromBottom < edge) { // 添加一个动画没有更多数据的时候 ListView 向下移动覆盖正在加载更多数据的标志
-//      _scrollController.animateTo(
-//          _scrollController.offset - (edge -offsetFromBottom),
-//          duration: new Duration(milliseconds: 1000),
-//          curve: Curves.easeOut);
-//    }
+//        double edge = 50.0;
+//        double offsetFromBottom = _scrollController.position.maxScrollExtent -
+//            _scrollController.position.pixels;
+//        // 添加一个动画没有更多数据的时候 ListView 向下移动覆盖正在加载更多数据的标志
+//        if (offsetFromBottom < edge) {
+//            _scrollController.animateTo(
+//                _scrollController.offset - (edge - offsetFromBottom),
+//                duration: new Duration(milliseconds: 1000),
+//                curve: Curves.easeOut);
+//        }
     }
 
     // 加载中的提示
@@ -102,25 +110,17 @@ class _ListRefreshState extends State<ListRefresh> {
     // 上提加载loading的widget,如果数据到达极限，显示没有更多
     Widget _buildProgressIndicator() {
         if (_hasMore) {
-            return new Padding(
+            return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: new Center(
-                    child: Column(
-                        children: <Widget>[
-                            new Opacity(
-                                opacity: isLoading ? 1.0 : 0.0,
-                                child: new CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation(Colors.blue)),
-                            ),
-                            SizedBox(height: 20.0),
-                            Text('加载更多数据...',
-                                style: TextStyle(fontSize: 14.0),
-                            )
-                        ],
-                    )
-                    //child:
-                ),
-            );
+                child: Center(child: Column(
+                    children: <Widget>[
+                        Opacity(opacity: isLoading ? 1.0 : 0.0,
+                            child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(Colors.blue))
+                        ),
+                        SizedBox(height: 20.0),
+                        Text('加载更多数据...', style: TextStyle(fontSize: 14.0))
+                    ])));
         } else {
             return _buildLoadText();
         }
@@ -134,10 +134,11 @@ class _ListRefreshState extends State<ListRefresh> {
 
     @override
     Widget build(BuildContext context) {
-        return new RefreshIndicator(
-            child: ListView.builder(
+        return RefreshIndicator(key: _refreshIndicatorKey,
+            child: ListView.separated(
                 itemCount: items.length + 1,
                 itemBuilder: (context, index) {
+                    print('index:$index length:${items.length}');
                     if (index == 0 && index != items.length) {
                         if (widget.headerView is Function) {
                             return widget.headerView();
@@ -145,7 +146,6 @@ class _ListRefreshState extends State<ListRefresh> {
                             return Container(height: 0);
                         }
                     }
-                    print('$index lenght: ${items.length}');
                     if (index == items.length) {
                         //return _buildLoadText();
                         return _buildProgressIndicator();
@@ -153,7 +153,6 @@ class _ListRefreshState extends State<ListRefresh> {
                         //print('itemsitemsitemsitems:${items[index].title}');
                         //return ListTile(title: Text("Index${index}:${items[index].title}"));
                         if (widget.renderItem is Function) {
-                            print("oooooo $widget.renderItem" );
                             return widget.renderItem(index, items[index]);
                         } else {
                             throw ArgumentError("renderItem is not function");
@@ -161,8 +160,20 @@ class _ListRefreshState extends State<ListRefresh> {
                     }
                 },
                 controller: _scrollController,
+                separatorBuilder: (BuildContext context, int index) => Divider(height: 1),
             ),
-            onRefresh: refresh,
-        );
+            onRefresh: () async {
+                final data = await refresh();
+                Scaffold.of(_refreshIndicatorKey.currentContext)
+                    .showSnackBar(SnackBar(content: Text("刷新成功")));
+                items.clear();
+                setState(() {
+                    items.addAll(data);
+                    _hasMore = data is List && data.isNotEmpty;
+                    isLoading = false;
+                });
+                backElasticEffect();
+                return null;
+            });
     }
 }
