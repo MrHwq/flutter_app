@@ -1,50 +1,50 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 import 'package:flutter/material.dart';
-import 'package:flutter_app/StarWidget.dart';
+import 'package:flutter_app/widgets/star_widget.dart';
 
-void main() => runApp(MyApp());
+//void main() => runApp(MyApp());
+//
+//class MyApp extends StatelessWidget {
+//    // This widget is the root of your application.
+//    @override
+//    Widget build(BuildContext context) {
+//        return MaterialApp(
+//            title: 'Flutter Code Sample for material.AppBar.actions',
+//            theme: ThemeData(
+//                primarySwatch: Colors.blue,
+//            ),
+//            home: Scaffold(
+//                appBar: AppBar(
+//                    title: Text('Hello surface World', style: Theme
+//                        .of(context)
+//                        .primaryTextTheme
+//                        .title),
+//                    actions: <Widget>[
+//                        IconButton(
+//                            icon: Icon(Icons.list),
+//                            tooltip: 'Open shopping cart ',
+//                            onPressed: () {},
+//                        ),
+//                    ],
+//                ),
+//                body: Surface(),
+//            )
+//        );
+//    }
+//}
 
-class MyApp extends StatelessWidget {
-    // This widget is the root of your application.
-    @override
-    Widget build(BuildContext context) {
-        return MaterialApp(
-            title: 'Flutter Code Sample for material.AppBar.actions',
-            theme: ThemeData(
-                primarySwatch: Colors.blue,
-            ),
-            home: Scaffold(
-                appBar: AppBar(
-                    title: Text('Hello surface World', style: Theme
-                        .of(context)
-                        .primaryTextTheme
-                        .title),
-                    actions: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.list),
-                            tooltip: 'Open shopping cart ',
-                            onPressed: () {},
-                        ),
-                    ],
-                ),
-                body: Surface(),
-            )
-        );
-    }
-}
-
-class Surface extends StatefulWidget {
+class SurfaceWidget extends StatefulWidget {
     @override
     State<StatefulWidget> createState() {
-        return _SurfaceState();
+        return _SurfaceWidgetState();
     }
 }
 
-class _SurfaceState extends State<Surface> {
+class _SurfaceWidgetState extends State<SurfaceWidget> {
     Column buildButtonColumn(BuildContext context, IconData icon, String label) {
         Color color = Theme
             .of(context)
-            .primaryColor;
+            .primaryColorDark;
 
         return Column(
             mainAxisSize: MainAxisSize.min,
@@ -120,8 +120,30 @@ import 'package:flutter/material.dart';
 
         Widget image = Image.asset(
             'assets/images/house.png', width: 600, height: 240, fit: BoxFit.cover);
-        return new ListView(
-            children: <Widget>[image, titleSection, buttonSection, textSection],
-        );
+//        return new ListView(
+//            children: <Widget>[image, titleSection, buttonSection, textSection],
+//        );
+        return NestedScrollView(headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return <Widget>[
+                SliverAppBar(
+                    primary: true,
+                    snap: false,
+                    brightness: Brightness.light,
+                    //与floating结合使用
+                    expandedHeight: 240.0,
+                    floating: false,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(centerTitle: true,
+                        title: Text("我是一个帅气的标题",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                            )), background: image,),
+                ),
+            ];
+        },
+            body: Center(
+                child: ListView(
+                    children: <Widget>[titleSection, buttonSection, textSection])));
     }
 }

@@ -1,9 +1,9 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+//void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class _MyApp extends StatelessWidget {
     // This widget is the root of your application.
     @override
     Widget build(BuildContext context) {
@@ -14,6 +14,8 @@ class MyApp extends StatelessWidget {
             ),
             home: Scaffold(
                 appBar: AppBar(
+                    leading: new Icon(Icons.home),
+                    centerTitle: true,
                     title: Text('Hello World', style: Theme
                         .of(context)
                         .primaryTextTheme
@@ -41,6 +43,7 @@ class TextTest extends StatefulWidget {
 
 class _TextTestState extends State<TextTest> {
     final TextEditingController _controller = TextEditingController();
+    bool hasText = false;
 
     @override
     Widget build(BuildContext context) {
@@ -48,18 +51,24 @@ class _TextTestState extends State<TextTest> {
             children: <Widget>[TextField(controller: _controller,
                 onChanged: (s) {
                     print(s);
+                    bool nowText = s != null && s.isNotEmpty;
+                    if (nowText != hasText) {
+                        setState(() {
+                            hasText = nowText;
+                        });
+                    }
                 },
-                decoration: InputDecoration(hintText: 'Type sth'),),
+                decoration: InputDecoration(hintText: '输入点东西吧'),),
             RaisedButton(
-                onPressed: () {
+                onPressed: hasText ? () {
                     showDialog(context: context, builder: (c) {
                         return AlertDialog(
-                            title: Text('What u typed'),
+                            title: Text('你输入的是'),
                             content: Text(_controller.text),
                         );
                     });
-                },
-                child: Text('Done')
+                } : null,
+                child: Text('完成')
             )
             ]);
     }

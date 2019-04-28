@@ -15,7 +15,7 @@ class Post {
 
     @override
     String toString() {
-        return "userId: ${userId}\nid:${id}\ntitle:${title}\nbody:${body}";
+        return "userId: $userId\nid:$id\ntitle:$title\nbody:$body";
     }
 
 }

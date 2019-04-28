@@ -1,25 +1,27 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 //void main() => runApp(MyApp());
 
-//class MyApp extends StatelessWidget {
-//// This widget is the root of your application.
-//    @override
-//    Widget build(BuildContext context) {
-//        List<Product> products = new List();
-//        for (int i = 0; i < 100; ++i) {
-//            products.add(Product(name: WordPair.random().asPascalCase));
-//        }
-//        return MaterialApp(
-//            title: 'Flutter Code Sample for material.AppBar.actions',
-//            theme: ThemeData(
-//                primarySwatch: Colors.blue,
-//            ),
-//            home: ShopList(products: products),
-//        );
-//    }
-//}
+class _MyApp extends StatelessWidget {
+// This widget is the root of your application.
+    @override
+    Widget build(BuildContext context) {
+        List<Product> products = List<Product>.generate(100, (index) =>
+            Product(name: '$index ${WordPair
+                .random()
+                .asPascalCase}')
+        );
+        return MaterialApp(
+            title: 'Flutter Code Sample for material.AppBar.actions',
+            theme: ThemeData(
+                primarySwatch: Colors.blue,
+            ),
+            home: ShopList(products: products),
+        );
+    }
+}
 
 class Product {
     const Product({this.name});
@@ -32,7 +34,7 @@ typedef void CartChangedCallback(Product product, bool inCart);
 class ShopListItem extends StatelessWidget {
     ShopListItem({Product product, this.inCart, this.onCartChanged})
         : product = product,
-            super(key: new ObjectKey(product));
+            super(key: ObjectKey(product));
 
     final Product product;
     final bool inCart;
@@ -46,14 +48,14 @@ class ShopListItem extends StatelessWidget {
 
     TextStyle _getTextStyle(BuildContext context) {
         if (!inCart) return null;
-        return new TextStyle(color: Colors.black54, decoration: TextDecoration.lineThrough);
+        return TextStyle(color: Colors.black54, decoration: TextDecoration.lineThrough);
     }
 
     @override
     Widget build(BuildContext context) {
         return ListTile(onTap: () {
             onCartChanged(product, !inCart);
-        }, leading: new CircleAvatar(
+        }, leading: CircleAvatar(
             backgroundColor: _getColor(context), child: Text(product.name[0])),
             title: Text(product.name, style: _getTextStyle(context),),
         );
@@ -88,28 +90,30 @@ class _ShopListState extends State<ShopList> {
 
     @override
     Widget build(BuildContext context) {
-        return new Scaffold(appBar: new AppBar(title: Text('购物清单'),
+        return Scaffold(appBar: AppBar(title: Text('购物清单'),
             actions: <Widget>[
                 IconButton(
                     icon: Icon(Icons.backspace),
                     onPressed: () {
-                        Navigator.pop(context, 'wakda forever');
+                        if (Navigator.canPop(context)) {
+                            Navigator.pop(context, 'wakda forever');
+                        }
                     },
                 ),
             ]),
-            body: new GridView.count(
+            body: GridView.count(
                 crossAxisCount: 2,
                 children: widget.products.map((Product product) {
-                    return new ShopListItem(
+                    return ShopListItem(
                         product: product,
                         inCart: _shopCart.contains(product),
                         onCartChanged: _handleCart,
                     );
                 }).toList(),
             ));
-//            new ListView(padding: new EdgeInsets.symmetric(vertical: 8),
+//              ListView(padding:   EdgeInsets.symmetric(vertical: 8),
 //                children: widget.products.map((Product product) {
-//                    return new ShopListItem(
+//                    return   ShopListItem(
 //                        product: product,
 //                        inCart: _shopCart.contains(product),
 //                        onCartChanged: _handleCart,
