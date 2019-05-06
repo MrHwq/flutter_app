@@ -74,7 +74,7 @@ class _MessageState extends State<MessageList> {
             body: ListRefresh.ListRefresh(renderItem: makeCard,
                 refresh: () async {
                     print('onrefresh');
-                    return Future<List<Object>>.delayed(Duration(seconds: 2), () {
+                    return Future<List<Object>>.delayed(Duration(microseconds: 300), () {
                         print('onrefresh 0 end');
                         page = 0;
                         Iterable<WordPair> iter = generateWordPairs();
@@ -89,7 +89,7 @@ class _MessageState extends State<MessageList> {
                 more: () async {
                     print('onloadmore page: $page end');
                     page++;
-                    return Future<List<Object>>.delayed(Duration(seconds: 4), () {
+                    return Future<List<Object>>.delayed(Duration(microseconds: 100), () {
                         page++;
                         List res = [];
                         if (page < 4) {

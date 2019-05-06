@@ -5,6 +5,7 @@ import 'package:flutter_app/bean/post.dart';
 import 'package:flutter_app/bean/product.dart';
 import 'package:flutter_app/models/products.dart';
 import 'package:flutter_app/views/collect.dart';
+import 'package:flutter_app/views/count_button.dart';
 import 'package:flutter_app/views/message.dart';
 import 'package:flutter_app/views/product.dart';
 import 'package:flutter_app/widgets/list_refresh.dart' as ListRefresh;
@@ -30,7 +31,7 @@ import 'package:scoped_model/scoped_model.dart';
 //}
 
 class MyStateWidget extends StatefulWidget {
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
+//    final _scaffoldKey =  GlobalKey<ScaffoldState>();
 
     MyStateWidget({Key key}) : super(key: key);
 
@@ -61,50 +62,6 @@ class GestureButton extends StatelessWidget {
     }
 }
 
-class _CounteState extends State<CountButton> {
-    int _count = 0;
-
-    @override
-    Widget build(BuildContext context) {
-        return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[ CountAdd(onPressed: () {
-                setState(() {
-                    ++_count;
-                });
-            },), CountDisplay(count: _count)
-            ],);
-    }
-}
-
-class CountDisplay extends StatelessWidget {
-    CountDisplay({this.count});
-
-    final int count;
-
-    @override
-    Widget build(BuildContext context) {
-        return Text('计数器:$count');
-    }
-}
-
-class CountAdd extends StatelessWidget {
-    CountAdd({this.onPressed});
-
-    final VoidCallback onPressed;
-
-    @override
-    Widget build(BuildContext context) {
-        return RaisedButton(onPressed: this.onPressed, child: Text('增加'));
-    }
-}
-
-class CountButton extends StatefulWidget {
-    @override
-    _CounteState createState() {
-        return _CounteState();
-    }
-}
-
 class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClientMixin {
     final _suggestion = <WordPair>[];
     final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -117,19 +74,41 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
         keepScrollOffset: true, debugLabel: "product");
 
     headerView() {
+        final WordPairRandom = WordPair.random();
         return Column(
             children: <Widget>[
-                Stack(children: <Widget>[Pagination(items: List.generate(4, (idx) =>
-                    BaseItem(Image.asset('assets/images/house.png', fit: BoxFit.cover), "$idx")),
-                    onTap: (item) =>
-                        widget._scaffoldKey.currentState.showSnackBar(
-                            SnackBar(content: Text('点击$item')))),
-//                        Positioned(
-//                            //方法二
-//                            top: 10.0,
-//                            left: 0.0,
-//                            child: this),
-                ]),
+                Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                        Image.asset(
+                            'assets/images/house.png', width: 18, height: 18, fit: BoxFit.cover),
+                        Container(
+                            margin: const EdgeInsets.only(top: 1),
+                            child: Text(title,
+                                style: Theme
+                                    .of(context)
+                                    .primaryTextTheme
+                                    .subtitle
+                            )
+                        ),
+                        IconButton(
+                            icon: words.products.isNotEmpty
+                                ? Icon(Icons.favorite, color: Colors.red, size: 32)
+                                : Icon(Icons.favorite_border, color: Colors.grey, size: 32),
+                            tooltip: 'Open shopping cart ${WordPairRandom.asPascalCase}',
+                            onPressed: () {
+                                _pushSaved(context);
+                            })
+                    ]),
+                Pagination(items: List.generate(4, (idx) {
+                    return BaseItem(Image.asset('assets/images/banner${idx % 2}.jpg',
+                        height: 200,
+                        fit: BoxFit.cover), "$idx");
+                }), onTap: (item) {
+//                        widget._scaffoldKey.currentState.showSnackBar(
+//                            SnackBar(content: Text('点击$item')))
+                }),
                 SizedBox(height: 10, child: Container(color: Theme
                     .of(context)
                     .primaryColorDark)),
@@ -215,8 +194,8 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
                     });
                 }),
             onTap: () {
-                widget._scaffoldKey.currentState.showSnackBar(
-                    SnackBar(content: Text('查看下一步信息${pair.asPascalCase}')));
+//                widget._scaffoldKey.currentState.showSnackBar(
+//                    SnackBar(content: Text('查看下一步信息${pair.asPascalCase}')));
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return MessageList();
                 }));
@@ -225,7 +204,7 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
 
     void _pushSaved(BuildContext context) {
         if (words.products.isEmpty) {
-            widget._scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("没有选中单词")));
+//            widget._scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("没有选中单词")));
             return;
         }
         Navigator.of(context).push(MaterialPageRoute(builder: (buildContext) {
@@ -249,43 +228,47 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
 
     @override
     Widget build(BuildContext context) {
-        final wordPair = WordPair.random();
         words = ScopedModel.of<ProductsModel>(context);
         print('build $title');
-        return Scaffold(
-            key: widget._scaffoldKey,
-            appBar: AppBar(title:
-//                Image.network(
-//                    "https://community.particle.io/letter_avatar/positev/90/5_1017516fff9cfe3c69f855e6deabc902.png"),
-            Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+        return
+//            Scaffold(
+//            key: widget._scaffoldKey,
+//            appBar: AppBar(title:
+////                Image.network(
+////                    "https://community.particle.io/letter_avatar/positev/90/5_1017516fff9cfe3c69f855e6deabc902.png"),
+//            Column(
+//                mainAxisSize: MainAxisSize.min,
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                    Image.asset(
+//                        'assets/images/house.png', width: 18, height: 18, fit: BoxFit.cover),
+//                    Container(
+//                        margin: const EdgeInsets.only(top: 1),
+//                        child: Text(title,
+//                            style: Theme
+//                                .of(context)
+//                                .primaryTextTheme
+//                                .subtitle
+//                        )
+//                    )
+//                ]),
+//                actions: <Widget>[
+//                    IconButton(
+//                        icon: words.products.isNotEmpty
+//                            ? Icon(Icons.favorite, color: Colors.red, size: 32)
+//                            : Icon(Icons.favorite_border, color: Colors.grey, size: 32),
+//                        tooltip: 'Open shopping cart ${wordPair.asPascalCase}',
+//                        onPressed: () {
+//                            _pushSaved(context);
+//                        },
+//                    ),
+//                ],
+//            ),
+//                body:
+            Stack(
+                alignment: AlignmentDirectional.bottomEnd,
                 children: <Widget>[
-                    Image.asset(
-                        'assets/images/house.png', width: 18, height: 18, fit: BoxFit.cover),
-                    Container(
-                        margin: const EdgeInsets.only(top: 1),
-                        child: Text(title,
-                            style: Theme
-                                .of(context)
-                                .primaryTextTheme
-                                .subtitle
-                        )
-                    )
-                ]),
-                actions: <Widget>[
-                    IconButton(
-                        icon: words.products.isNotEmpty
-                            ? Icon(Icons.favorite, color: Colors.red, size: 32)
-                            : Icon(Icons.favorite_border, color: Colors.grey, size: 32),
-                        tooltip: 'Open shopping cart ${wordPair.asPascalCase}',
-                        onPressed: () {
-                            _pushSaved(context);
-                        },
-                    ),
-                ],
-            ),
-            body: Container(child: FutureBuilder<Post>(future: posts,
+                    Container(child: FutureBuilder<Post>(future: posts,
                 builder: (context, snapshot) {
                     if (snapshot.hasData) {
 //                        NestedScrollView(headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -303,10 +286,13 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
                     }
                     return Center(child: CircularProgressIndicator());
                 })),
-            floatingActionButton: FloatingActionButton(onPressed: () {
-                _navigateShop(context);
-            }, tooltip: 'Add', child: Icon(Icons.add)),
-//              Center(child:   Text(WordPair.random().asPascalCase))
+                    Positioned(bottom: 16, right: 16,
+                        child: FloatingActionButton(onPressed: () {
+                            _navigateShop(context);
+                        }, tooltip: 'Add', child: Icon(Icons.add)))
+                ]
+//                ),
+//            floatingActionButton:
         );
     }
 
@@ -333,8 +319,8 @@ class RandomWordState extends State<MyStateWidget> with AutomaticKeepAliveClient
         }));
         if (result != null) {
 //            print(result);
-            widget._scaffoldKey.currentState
-                .showSnackBar(SnackBar(content: Text('某人返回了：：：$result')));
+//            widget._scaffoldKey.currentState
+//                .showSnackBar(SnackBar(content: Text('某人返回了：：：$result')));
         }
     }
 

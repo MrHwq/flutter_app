@@ -134,7 +134,6 @@ class _ListRefreshState extends State<ListRefresh> {
 
     IndexedWidgetBuilder _itemBuilder() {
         return (context, index) {
-            print('index:$index length:${_items.length}');
             if (index == 0 && index != _items.length) {
                 if (widget.headerView is Function) {
                     return widget.headerView();
