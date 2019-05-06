@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/banner_base_item.dart';
+import 'package:flutter_app/bean/banner_base_item.dart';
 import 'package:flutter_app/widgets/home_banner.dart';
 
 class Pagination extends StatelessWidget {

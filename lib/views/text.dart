@@ -14,7 +14,7 @@ class _MyApp extends StatelessWidget {
             ),
             home: Scaffold(
                 appBar: AppBar(
-                    leading: new Icon(Icons.home),
+                    leading: Icon(Icons.home),
                     centerTitle: true,
                     title: Text('Hello World', style: Theme
                         .of(context)
@@ -25,7 +25,7 @@ class _MyApp extends StatelessWidget {
                             icon: Icon(Icons.list),
                             tooltip: 'Open shopping cart ',
                             onPressed: () {},
-                        ),
+                        )
                     ],
                 ),
                 body: TextTest(),
@@ -58,7 +58,8 @@ class _TextTestState extends State<TextTest> {
                         });
                     }
                 },
-                decoration: InputDecoration(hintText: '输入点东西吧'),),
+                decoration: InputDecoration(hintText: '输入点东西吧')
+            ),
             RaisedButton(
                 onPressed: hasText ? () {
                     showDialog(context: context, builder: (c) {
@@ -70,6 +71,7 @@ class _TextTestState extends State<TextTest> {
                 } : null,
                 child: Text('完成')
             )
-            ]);
+            ]
+        );
     }
 }

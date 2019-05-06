@@ -62,7 +62,7 @@ class _SurfaceWidgetState extends State<SurfaceWidget> {
 
     @override
     Widget build(BuildContext context) {
-        Widget titleSection = new Container(
+        Widget titleSection = Container(
             padding: const EdgeInsets.all(32),
             child: Row(
                 children: [
@@ -72,19 +72,20 @@ class _SurfaceWidgetState extends State<SurfaceWidget> {
                             children: [
                                 Container(
                                     padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: new Text(
+                                    child: Text(
                                         'title',
                                         style: TextStyle(fontWeight: FontWeight.bold),
                                     ),
                                 ),
                                 Text('Kan sub', style: TextStyle(color: Colors.grey[500]))
                             ],
-                        )),
+                        )
+                    ),
                     StarWidget()
                 ],
             ));
-        Widget buttonSection = new Container(
-            child: new Row(
+        Widget buttonSection = Container(
+            child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[buildButtonColumn(context, Icons.call, 'CALL'),
                 buildButtonColumn(context, Icons.near_me, 'ROUTE'),
@@ -95,27 +96,27 @@ class _SurfaceWidgetState extends State<SurfaceWidget> {
 
         final textString = '''
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
-import 'package:flutter/material.dart';
+import 'package:flutter/material.message';
 ''';
-        Widget textSection = new Container(
+        Widget textSection = Container(
             padding: const EdgeInsets.all(32),
-            child: new Text(textString, softWrap: true)
+            child: Text(textString, softWrap: true)
         );
 
         Widget image = Image.asset(

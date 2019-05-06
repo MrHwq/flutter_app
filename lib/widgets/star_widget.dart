@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class StarWidget extends StatefulWidget {
-    bool hasStar;
 
     @override
     _StarState createState() {
@@ -12,9 +11,10 @@ class StarWidget extends StatefulWidget {
 class _StarState extends State<StarWidget> {
     bool _isStar = true;
     int _starCount = 41;
+    bool hasStar;
 
     void handleTap() {
-        widget.hasStar = false;//
+        hasStar = false;
     }
 
     @override
@@ -31,10 +31,12 @@ class _StarState extends State<StarWidget> {
                         }
                         _isStar = !_isStar;
                     });
-                }),),
+                })
+            ),
             SizedBox(width: 18,
-                child: Container(child: Text('$_starCount')))
-            ],
+                child: Container(child: Text('$_starCount'))
+            )
+            ]
         );
     }
 }

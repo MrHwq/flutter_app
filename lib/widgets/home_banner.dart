@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/banner_base_item.dart';
+import 'package:flutter_app/bean/banner_base_item.dart';
 
 class HomeBanner<T extends BaseItem> extends StatefulWidget {
     final List<T> bannerStories;
@@ -60,7 +60,8 @@ class _BannerState<T extends BaseItem> extends State<HomeBanner> {
                         onPageChanged: _onPageChanged,
                         children: _buildItems(),),
                     _buildIndicator(), // 下面的小点
-                ]),
+                ]
+            )
         );
     }
 
@@ -69,15 +70,12 @@ class _BannerState<T extends BaseItem> extends State<HomeBanner> {
         List<Widget> items = [];
         if (widget.bannerStories.length > 0) {
             // 头部添加一个尾部Item，模拟循环
-            items.add(
-                _buildItem(widget.bannerStories[widget.bannerStories.length - 1]));
+            items.add(_buildItem(widget.bannerStories[widget.bannerStories.length - 1]));
             // 正常添加Item
-            items.addAll(
-                widget.bannerStories.map((story) => _buildItem(story)).toList(
-                    growable: false));
+            items.addAll(widget.bannerStories.map((story) => _buildItem(story))
+                .toList(growable: false));
             // 尾部
-            items.add(
-                _buildItem(widget.bannerStories[0]));
+            items.add(_buildItem(widget.bannerStories[0]));
         }
         return items;
     }
@@ -92,24 +90,29 @@ class _BannerState<T extends BaseItem> extends State<HomeBanner> {
             child: Stack(
                 fit: StackFit.expand,
                 children: <Widget>[story.image, _buildItemTitle(story.title), // 内容文字,大意
-                ]));
+                ]
+            )
+        );
     }
 
     Widget _buildItemTitle(String title) {
         return Container(
             decoration: BoxDecoration(
+
                 /// 背景的渐变色
                 gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: const Alignment(0.0, -0.8),
                     colors: [const Color(0xa0000000), Colors.transparent],
-                ),
+                )
             ),
             alignment: Alignment.bottomCenter,
             child: Container(
                 margin: EdgeInsets.symmetric(vertical: 22.0, horizontal: 16.0),
                 child: Text(
-                    title, style: TextStyle(color: Colors.white, fontSize: 18.0),),),
+                    title, style: TextStyle(color: Colors.white, fontSize: 18.0)
+                )
+            )
         );
     }
 

@@ -1,6 +1,7 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bean/product.dart';
 
 //void main() => runApp(MyApp());
 
@@ -9,10 +10,9 @@ class _MyApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         List<Product> products = List<Product>.generate(100, (index) =>
-            Product(name: '$index ${WordPair
+            Product(name: WordPair
                 .random()
-                .asPascalCase}')
-        );
+                .asPascalCase));
         return MaterialApp(
             title: 'Flutter Code Sample for material.AppBar.actions',
             theme: ThemeData(
@@ -21,12 +21,6 @@ class _MyApp extends StatelessWidget {
             home: ShopList(products: products),
         );
     }
-}
-
-class Product {
-    const Product({this.name});
-
-    final String name;
 }
 
 typedef void CartChangedCallback(Product product, bool inCart);
@@ -47,7 +41,9 @@ class ShopListItem extends StatelessWidget {
     }
 
     TextStyle _getTextStyle(BuildContext context) {
-        if (!inCart) return null;
+        if (!inCart) {
+            return null;
+        }
         return TextStyle(color: Colors.black54, decoration: TextDecoration.lineThrough);
     }
 
@@ -56,7 +52,8 @@ class ShopListItem extends StatelessWidget {
         return ListTile(onTap: () {
             onCartChanged(product, !inCart);
         }, leading: CircleAvatar(
-            backgroundColor: _getColor(context), child: Text(product.name[0])),
+            backgroundColor: _getColor(context),
+            child: Text(product.name[product.name.indexOf(' ''') + 1])),
             title: Text(product.name, style: _getTextStyle(context),),
         );
     }
@@ -69,10 +66,8 @@ class ShopList extends StatefulWidget {
 
     @override
     _ShopListState createState() {
-        // TODO: implement createState
         return _ShopListState();
     }
-
 }
 
 class _ShopListState extends State<ShopList> {
@@ -98,8 +93,8 @@ class _ShopListState extends State<ShopList> {
                         if (Navigator.canPop(context)) {
                             Navigator.pop(context, 'wakda forever');
                         }
-                    },
-                ),
+                    }
+                )
             ]),
             body: GridView.count(
                 crossAxisCount: 2,
@@ -138,5 +133,4 @@ class _ShopListState extends State<ShopList> {
         super.dispose();
         print('dispose product');
     }
-
 }
